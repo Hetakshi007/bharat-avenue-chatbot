@@ -2,8 +2,14 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
+@app.route("/", methods=["GET"])
+def home():
+    return "Bharat Avenue Chatbot is Live!", 200
+
 @app.route("/chatbot", methods=["POST"])
 def chatbot():
+    print(f"Received request: {request.json}")  # Debugging log
+
     user_message = request.json.get("message", "").lower()
 
     responses = {
@@ -19,4 +25,5 @@ def chatbot():
     return jsonify({"response": response_text})
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+    print("Starting Flask app...")  # Extra log to confirm app startup
+    app.run(host="0.0.0.0", port=10000, debug=True)
