@@ -1,16 +1,18 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS  # Import CORS
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
-# ✅ Home Route to Confirm App is Running
+# ✅ Home Route
 @app.route("/", methods=["GET"])
 def home():
     return "Bharat Avenue Chatbot is Live! 🚀", 200
 
-# ✅ Chatbot Route (Handles Both POST & GET Requests)
-@app.route("/chatbot", methods=["POST", "GET"])
+# ✅ Chatbot Route (Handles POST Requests)
+@app.route("/chatbot", methods=["POST"])
 def chatbot():
-    if request.method == "POST":
+    try:
         user_message = request.json.get("message", "").lower()
 
         responses = {
@@ -24,9 +26,9 @@ def chatbot():
 
         response_text = responses.get(user_message, responses["fallback"])
         return jsonify({"response": response_text})
-    
-    else:
-        return jsonify({"message": "Please use a POST request to interact with the chatbot."}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     print("✅ Starting Bharat Avenue Chatbot...")
